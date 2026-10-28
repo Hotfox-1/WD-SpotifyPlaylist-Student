@@ -119,7 +119,11 @@ function buildPlaylist() {
         the mode
      ===================================================== */
 
-
+    if (modeSelector.value === "quickPlay") {
+      songs = allSongs.slice(0, 3);
+    } else if (modeSelector.value === "fullSession") {
+      songs = allSongs;
+    }
 
   /* =====================================================
      DEV TEAMS — STEP 6: Conditional Feedback
@@ -165,7 +169,13 @@ function buildPlaylist() {
      YOUR CODE GOES HERE:
      ===================================================== */
 
-
+    if (songs.length === 0) {
+      feedback.textContent = "No songs found for this mood.";
+      feedback.className = "feedback-box error";
+    } else {
+      feedback.textContent = `Loaded ${songs.length} songs for this mood.`;
+      feedback.className = "feedback-box success";
+    }
 
   /* =====================================================
      DEV TEAMS — STEP 7: The Loop (⭐⭐⭐ MOST IMPORTANT!)
@@ -182,6 +192,7 @@ function buildPlaylist() {
      YOUR CODE GOES HERE:
      ===================================================== */
 
+     songs.forEach(function (song) {
 
 
     /* =====================================================
@@ -208,7 +219,28 @@ function buildPlaylist() {
        YOUR CODE GOES HERE:
        ===================================================== */
 
+        songRow = document.createElement("div");
+        songRow.className = "song-row";
 
+        const img = document.createElement("img");
+        img.src = song.cover;
+        img.alt = song.title;
+        img.onerror = function () {
+          this.src = "https://placehold.co/60x60?text=Music";
+        };
+
+        const titleSpan = document.createElement("span");
+        titleSpan.textContent = song.title;
+
+        const removeHintSpan = document.createElement("span");
+        removeHintSpan.className = "remove-hint";
+        removeHintSpan.textContent = "click to remove";
+
+        songRow.appendChild(img);
+        songRow.appendChild(titleSpan);
+        songRow.appendChild(removeHintSpan);
+
+        container.appendChild(songRow);
 
     /* =====================================================
        DEV TEAMS — STEP 9: DOM Element Removal on Click
@@ -237,8 +269,15 @@ function buildPlaylist() {
        YOUR CODE GOES HERE:
        ===================================================== */
 
-
-
+        removeHintSpan.addEventListener("click", function (event) {
+          removeHintSpan.parentElement.classList.add("removing");
+          setTimeout(function () {
+            removeHintSpan.parentElement.remove();
+            songsRemovedCount++;
+            updateMilestone();
+          }, 200);
+        });
+     });
   // (Make sure your Step 7 loop closes here.)
 
 
@@ -266,5 +305,17 @@ function buildPlaylist() {
      YOUR CODE GOES HERE:
      ===================================================== */
 
-
+     function updateMilestone() {
+      milestones = [
+        { count: 4, message: "🎵 4 song cleared!" },
+        { count: 8, message: "🎵 8 songs cleared!" },
+        { count: 12, message: "🎵 12 songs cleared!" },
+        { count: 16, message: "🎵 16 songs cleared!" },
+      ];
+      milestones.forEach(function (milestoneObj) {
+        if (songsRemovedCount === milestoneObj.count) {
+          milestone.textContent = milestoneObj.message;
+        }
+      });
+     }
 }
